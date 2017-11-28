@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">عرفني</string>
+    <string name="choose_region">أختر منطقه</string>
+    <string name="start">اكمل البيانات</string>
+    <string name="open_internet_connection"> يجب تفعيل الانترنت في الجهاز</string>
+    <string name="ok">حسنا</string>
+    <string name="cancel">الغاء</string>
+    <string name="should_select_region">يجب اختيار منطقه</string>
+    <string name="fail_to_get_spinner_data">فشل في اظهار المناطق‘ تحقق من الاتصال بالانترنت</string>
+    <string name="fail_to_get_spinner_data_types">فشل في اظهارالانواع‘ تحقق من الاتصال بالانترنت</string>
+    <string name="name">الاسم</string>
+    <string name="email">الايميل</string>
+    <string name="description">الوصف</string>
+    <string name="type">النوع</string>
+    <string name="send">ارسل</string>
+    <string name="select_image">التقط/اختر صوره</string>
+    <string name="empty_fields">بيانات فارغه</string>
+    <string name="invalid_email">تحقق من صحه الايميل</string>
+</resources>
