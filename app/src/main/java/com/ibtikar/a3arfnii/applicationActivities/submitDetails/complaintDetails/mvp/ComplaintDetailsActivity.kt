@@ -238,7 +238,7 @@ class ComplaintDetailsActivity : AppCompatActivity(), ComplaintDetailsContract.V
     }
 
     override fun pojoUploaded() {
-        finish()
+      onBackPressed()
     }
 
 

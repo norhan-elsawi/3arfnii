@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import com.ibtikar.a3arfnii.R
-import com.ibtikar.a3arfnii.applicationActivities.mainPage.mvp.MainPage
+import com.ibtikar.a3arfnii.applicationActivities.submitDetails.chooseArea.mvp.ChooseAreaActivity
 
 
 class SplashScreen : AppCompatActivity() {
@@ -17,7 +17,7 @@ class SplashScreen : AppCompatActivity() {
 
         val handler = Handler()
         handler.postDelayed({
-            var intent = Intent(this, MainPage::class.java)
+            var intent = Intent(this, ChooseAreaActivity::class.java)
             startActivity(intent)
             finish()
         }, 3000)

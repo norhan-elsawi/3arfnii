@@ -6,5 +6,4 @@ package com.ibtikar.a3arfnii.base.interfaces
 interface IBasePresenter {
 
     fun isNetworkConnected(): Boolean
-    fun requestAuth()
 }

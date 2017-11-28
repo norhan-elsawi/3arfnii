@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -15,6 +16,8 @@ import com.ibtikar.a3arfnii.applicationActivities.submitDetails.complaintDetails
 import com.ibtikar.a3arfnii.di.Injector
 import com.ibtikar.a3arfnii.di.component.ApplicationComponent
 import com.ibtikar.a3arfnii.model.utils.Constants
+import com.leo.simplearcloader.ArcConfiguration
+import com.leo.simplearcloader.SimpleArcDialog
 import kotlinx.android.synthetic.main.activity_choose_area.*
 import javax.inject.Inject
 
@@ -29,20 +32,53 @@ class ChooseAreaActivity : AppCompatActivity(), ChooseAreaContract.View {
 
     private var selectedRegion = ""
 
+    var mDialog: SimpleArcDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_area)
         resolveDaggerDependency(Injector.INSTANCE.appComponent)
-
+        initLoader()
         val filter = IntentFilter()
         filter.addAction(Constants.RECEIVE_NETWORK_STATE_ACTION)
         registerReceiver(networkStateReceiver, filter)
 
+        if (presenter.getUserId() == "") {
+            requestAuth()
+        } else {
+            mDialog?.show()
             presenter.getSpinnerValues()
-
+        }
         initSpinner()
         handleEvents()
 
+    }
+
+    private fun requestAuth() {
+
+        if (presenter.getUserId() == "") {
+            val isNetworkAvailableFlag = presenter?.isNetworkConnected()
+            if (isNetworkAvailableFlag!!) {
+                mDialog?.show()
+                presenter?.requestAuth()!!
+            } else {
+                showInternetError()
+            }
+        }
+
+    }
+
+    override fun authResult(result: Boolean) {
+        if (result) {
+            presenter.getSpinnerValues()
+        } else {
+            mDialog?.hide()
+        }
+    }
+
+
+    private fun showInternetError() {
+        Toast.makeText(this, getString(R.string.open_internet_connection), Toast.LENGTH_SHORT).show()
     }
 
     private fun handleEvents() {
@@ -51,7 +87,6 @@ class ChooseAreaActivity : AppCompatActivity(), ChooseAreaContract.View {
                 val intent = Intent(this, ComplaintDetailsActivity::class.java)
                 intent.putExtra(Constants.SELECTED_REGION, selectedRegion)
                 startActivity(intent)
-                finish()
             } else {
                 Toast.makeText(this, getString(R.string.should_select_region), Toast.LENGTH_LONG).show()
             }
@@ -66,16 +101,18 @@ class ChooseAreaActivity : AppCompatActivity(), ChooseAreaContract.View {
     }
 
     override fun returnSpinnerValues(mRegions: ArrayList<String>) {
+        mDialog?.hide()
         regions = mRegions
-        if(regions.isNotEmpty()) {
+        if (regions.isNotEmpty()) {
             spinner.setItems(regions)
         }
-        if (regions.isNotEmpty()&&selectedRegion=="") {
+        if (regions.isNotEmpty() && selectedRegion == "") {
             selectedRegion = regions[0]
         }
     }
 
     override fun failToGetSpinnerData() {
+        mDialog?.hide()
         Toast.makeText(this, getString(R.string.fail_to_get_spinner_data), Toast.LENGTH_LONG).show()
     }
 
@@ -93,11 +130,25 @@ class ChooseAreaActivity : AppCompatActivity(), ChooseAreaContract.View {
         unregisterReceiver(networkStateReceiver)
     }
 
+    fun initLoader() {
+        mDialog = SimpleArcDialog(this)
+        val arcCon = ArcConfiguration(this)
+        arcCon.colors = intArrayOf(Color.parseColor("#008080"))
+        mDialog?.setConfiguration(arcCon)
+    }
+
+
     private val networkStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d("choose area activity", "Network " + " connected")
-            if (regions.isEmpty()) {
-                presenter.getSpinnerValues()
+
+            if (presenter.getUserId() == "") {
+                requestAuth()
+            } else {
+                if (regions.isEmpty()) {
+                    mDialog?.show()
+                    presenter.getSpinnerValues()
+                }
             }
 
         }

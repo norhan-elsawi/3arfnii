@@ -17,23 +17,6 @@ open class IBasePresenterImpl : IBasePresenter {
     lateinit var dataManager: DataManager
 
 
-    var mAuth: FirebaseAuth? = null
-
-    override fun requestAuth() {
-        if (dataManager?.getUserId() == "") {
-
-            mAuth = FirebaseAuth.getInstance()
-            mAuth?.signInAnonymously()?.addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = mAuth?.currentUser
-                    Log.e("auth",user?.uid!!)
-                    dataManager.saveUserId(user?.uid!!)
-
-                }
-
-            }
-        }
-    }
 
     override fun isNetworkConnected(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
