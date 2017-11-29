@@ -126,16 +126,20 @@ class ComplaintDetailsActivity : AppCompatActivity(), ComplaintDetailsContract.V
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST)
         }
         takePhoto.setOnClickListener { _ ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                        == PackageManager.PERMISSION_DENIED) {
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE);
+            if (imagesUri?.size!! < 4) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                            == PackageManager.PERMISSION_DENIED) {
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), PERMISSION_REQUEST_CODE);
 
+                    } else {
+                        EasyImage.openChooserWithGallery(this, getString(R.string.select_image), 0)
+                    }
                 } else {
                     EasyImage.openChooserWithGallery(this, getString(R.string.select_image), 0)
                 }
-            } else {
-                EasyImage.openChooserWithGallery(this, getString(R.string.select_image), 0)
+            }else{
+                Toast.makeText(this, getString(R.string.only_four_image_allowed), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -167,7 +171,7 @@ class ComplaintDetailsActivity : AppCompatActivity(), ComplaintDetailsContract.V
             if (resultCode == Activity.RESULT_OK) {
                 val place = PlacePicker.getPlace(this, data)
                 val toastMsg = String.format("Place: %s", place.address)
-                Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
                 address.text = toastMsg
                 latLong = place.latLng
             }
@@ -223,13 +227,13 @@ class ComplaintDetailsActivity : AppCompatActivity(), ComplaintDetailsContract.V
 
     override fun failToUploadImages() {
         mDialog?.hide()
-        progressLayOut.visibility=View.INVISIBLE
+        progressLayOut.visibility = View.INVISIBLE
         showInternetError()
     }
 
     override fun returnImageUri(mImageUri: ArrayList<String>) {
         mDialog?.hide()
-        progressLayOut.visibility=View.INVISIBLE
+        progressLayOut.visibility = View.INVISIBLE
         var complaintPojo = ComplaintPojo(name.text.toString(), email.text.toString(),
                 description.text.toString(), address.text.toString(), latLong!!.latitude.toString(),
                 latLong!!.longitude.toString(), selectedType, selectedRegion, mImageUri!!)
@@ -238,7 +242,7 @@ class ComplaintDetailsActivity : AppCompatActivity(), ComplaintDetailsContract.V
     }
 
     override fun pojoUploaded() {
-      onBackPressed()
+        onBackPressed()
     }
 
 
@@ -283,6 +287,7 @@ class ComplaintDetailsActivity : AppCompatActivity(), ComplaintDetailsContract.V
     override fun showProgressLayout() {
         progressLayOut.visibility = View.VISIBLE
     }
+
     override fun setTextAndProgress(text: String, progress: Double) {
         progressText.text = text
         progressBar.progress = progress.toInt()

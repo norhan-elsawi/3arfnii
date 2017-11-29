@@ -124,6 +124,7 @@
         android:background="@drawable/my_button"
         android:text="@string/send"
         android:textColor="@color/white"
+        android:textAppearance="@style/TextAppearance.AppCompat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressLayOut" />

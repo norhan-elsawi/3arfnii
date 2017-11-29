@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">عرفني</string>
     <string name="choose_region">أختر منطقه</string>
-    <string name="start">اكمل البيانات</string>
+    <string name="start">التالي</string>
     <string name="open_internet_connection"> يجب تفعيل الانترنت في الجهاز</string>
     <string name="ok">حسنا</string>
     <string name="cancel">الغاء</string>
@@ -17,4 +17,6 @@
     <string name="select_image">التقط/اختر صوره</string>
     <string name="empty_fields">بيانات فارغه</string>
     <string name="invalid_email">تحقق من صحه الايميل</string>
+    <string name="only_four_image_allowed">مسموح فقط ب 4 صور</string>
+
 </resources>

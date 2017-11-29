@@ -76,14 +76,17 @@ class ComplaintDetailsPresenter @Inject constructor(var view: ComplaintDetailsCo
 
             riversRef?.putFile(file)
                     ?.addOnSuccessListener({ taskSnapshot ->
-                        view.setTextAndProgress("$x/${images.size}", ((100.0*x)/images.size ))
+                        view.setTextAndProgress("$x/${images.size}", ((100.0 * x) / images.size))
                         x++
                         val downloadUrl = taskSnapshot.downloadUrl
                         imageUri.add(downloadUrl!!.toString())
                         if (i == images.size - 1) {
-                            view.returnImageUri(imageUri)
+                            val handler = android.os.Handler()
+                            handler.postDelayed({
+                                view.returnImageUri(imageUri)
+                            }, 500)
                         }
-                        Log.e("success","success")
+                        Log.e("success", "success")
 
                     })
                     ?.addOnFailureListener({
