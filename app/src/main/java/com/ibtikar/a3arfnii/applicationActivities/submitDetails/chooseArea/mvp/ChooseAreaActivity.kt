@@ -1,9 +1,6 @@
 package com.ibtikar.a3arfnii.applicationActivities.submitDetails.chooseArea.mvp
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -15,10 +12,14 @@ import com.ibtikar.a3arfnii.applicationActivities.submitDetails.chooseArea.di.Da
 import com.ibtikar.a3arfnii.applicationActivities.submitDetails.complaintDetails.mvp.ComplaintDetailsActivity
 import com.ibtikar.a3arfnii.di.Injector
 import com.ibtikar.a3arfnii.di.component.ApplicationComponent
+import com.ibtikar.a3arfnii.events.NetworkStateChange
 import com.ibtikar.a3arfnii.model.utils.Constants
 import com.leo.simplearcloader.ArcConfiguration
 import com.leo.simplearcloader.SimpleArcDialog
 import kotlinx.android.synthetic.main.activity_choose_area.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import javax.inject.Inject
 
 
@@ -37,11 +38,12 @@ class ChooseAreaActivity : AppCompatActivity(), ChooseAreaContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choose_area)
-        resolveDaggerDependency(Injector.INSTANCE.appComponent)
+        resolveDaggerDependency(Injector.INSTANCE.appComponent!!)
         initLoader()
-        val filter = IntentFilter()
-        filter.addAction(Constants.RECEIVE_NETWORK_STATE_ACTION)
-        registerReceiver(networkStateReceiver, filter)
+        EventBus.getDefault().register(this);
+//        val filter = IntentFilter()
+//        filter.addAction(Constants.RECEIVE_NETWORK_STATE_ACTION)
+//        registerReceiver(networkStateReceiver, filter)
 
         if (presenter.getUserId() == "") {
             requestAuth()
@@ -127,21 +129,21 @@ class ChooseAreaActivity : AppCompatActivity(), ChooseAreaContract.View {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(networkStateReceiver)
+        // unregisterReceiver(networkStateReceiver)
+        EventBus.getDefault().unregister(this);
     }
 
-    fun initLoader() {
+    private fun initLoader() {
         mDialog = SimpleArcDialog(this)
         val arcCon = ArcConfiguration(this)
         arcCon.colors = intArrayOf(Color.parseColor("#008080"))
         mDialog?.setConfiguration(arcCon)
     }
 
-
-    private val networkStateReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            Log.d("choose area activity", "Network " + " connected")
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onNetworkStateChange(networkStateChange: NetworkStateChange) {
+        Log.d("choose area activity", "Network " + " connected")
+        if (networkStateChange.isNetworkAvailable) {
             if (presenter.getUserId() == "") {
                 requestAuth()
             } else {
@@ -152,7 +154,13 @@ class ChooseAreaActivity : AppCompatActivity(), ChooseAreaContract.View {
             }
 
         }
-
     }
-
 }
+
+//    private val networkStateReceiver = object : BroadcastReceiver() {
+//        override fun onReceive(context: Context?, intent: Intent?) {
+//
+//
+//    }
+
+

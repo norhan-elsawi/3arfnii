@@ -70,7 +70,7 @@ class ComplaintDetailsActivity : AppCompatActivity(), ComplaintDetailsContract.V
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_complaint_details)
-        resolveDaggerDependency(Injector.INSTANCE.appComponent)
+        resolveDaggerDependency(Injector.INSTANCE.appComponent!!)
         initLoader()
 
         val filter = IntentFilter()
@@ -276,7 +276,7 @@ class ComplaintDetailsActivity : AppCompatActivity(), ComplaintDetailsContract.V
         Toast.makeText(this, getString(R.string.open_internet_connection), Toast.LENGTH_SHORT).show()
     }
 
-    fun initLoader() {
+    private fun initLoader() {
         mDialog = SimpleArcDialog(this)
         val arcCon = ArcConfiguration(this)
         arcCon.colors = intArrayOf(Color.parseColor("#008080"))

@@ -7,7 +7,9 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.util.Log
+import com.ibtikar.a3arfnii.events.NetworkStateChange
 import com.ibtikar.a3arfnii.model.utils.Constants
+import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
 
 
@@ -26,9 +28,11 @@ class NetworkStateReceiver : BroadcastReceiver(){
 
         } else {
             Log.d(ContentValues.TAG, "Network " + ni.typeName + " connected")
-            val intent = Intent()
-            intent.action = Constants.RECEIVE_NETWORK_STATE_ACTION
-            context.sendBroadcast(intent)
+//            val intent = Intent()
+//            intent.action = Constants.RECEIVE_NETWORK_STATE_ACTION
+//            context.sendBroadcast(intent)
+
+            EventBus.getDefault().post(NetworkStateChange(true))
 
         }
     }
